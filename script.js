@@ -1,26 +1,64 @@
 // Create a webpage with a 16x16 grid of square divs. The size should be a fixed height and width in pixels.
 const container = document.querySelector('.container');
-// Use flexbox to make the grid
+let gridSize = 16;
+let isMouseDown = false; // Track whether the mouse is pressed down
 
-// Each div is a square, whose size can change depending on how many there are within the grid
-// To distribute these, in CS50 we'd have heigh and width. Here we don't.
-// We have to ensure that the number given by the user is exactly that number of squares across and down.
-const square = document.createElement('div');
+// Function to clear grid
+function clearGrid() {
+    container.innerHTML = '';
+}
 
-// Make the grid the child of the container
-container.appendChild(square);
-// Set up even listeners for when the user hovers over each square of the grid when your
-// mouse passes over them, leaving a (pixelated) trail through your grid like a pen would.
-// While the user not hovering over the grid
-// Keep it blank
-// Else make it black, either by:
-    // adding a new class to the div.
-    // changing the div’s background color using JavaScript.
-// Add a button 
-// Put the button to the top of the screen 
+// Function to create grid
+function createGrid(gridSize) {
+    clearGrid();
+    const squareSize = container.offsetWidth / gridSize;
+    for (let i = 0; i < gridSize * gridSize; i++) {
+        let square = document.createElement('div');
+        square.style.width = `${squareSize}px`;
+        square.style.height = `${squareSize}px`;
+        square.classList.add('square');
+        // Make the grid the child of the container
+        container.appendChild(square);
+    }
+    const squares = document.querySelectorAll('.square');
+    // Event listener for mouse down on any square
+    squares.forEach((square) => {
+        square.addEventListener('mousedown', (e) => {
+            isMouseDown = true; // Set the flag to true
+            square.style.backgroundColor = 'black'; // Color the square on click as well
+            e.preventDefault(); // Prevents default text selection behavior
+        });
+    });    
+
+    // Event listener for mouse over on any square
+    squares.forEach((square) => {
+        square.addEventListener('mouseover', () => {
+            // Only color the square if the mouse is down
+            if (isMouseDown) {
+                square.style.backgroundColor = 'black';
+            }
+        });
+    });
+}
+
+// Initial creation of grid
+createGrid(gridSize);
+
+// Add a button
+const btn = document.querySelector('button');
+
 // Add an event listener to the button: When clicked, prompt the user
-// The prompt asks for the number of squares per side for the new grid (height and width). Limit: 100
-// Once entered:
-    // The existing grid is removed
-    // A new grid is made in the same total space as before (e.g. whether 4 grids or 100, the total space is e.g. 960x960px) 
-    // so that you’ve got a new sketch pad.
+btn.addEventListener('click', () => {
+    // The prompt asks for the number of squares per side for the new grid (height and width). Limit: 100
+    let answer = parseInt(prompt('Please enter grid size (max. 100 squares)'));
+    while (isNaN(answer) || answer < 1 || answer > 100) {
+        answer = parseInt(prompt('Please enter grid size (max. 100 squares)'));
+    }
+    gridSize = answer;
+    createGrid(gridSize);
+});
+
+// Event listener for mouse up on the document
+document.addEventListener('mouseup', () => {
+    isMouseDown = false; // Reset the flag when the mouse is released
+});
