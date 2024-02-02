@@ -1,5 +1,4 @@
 * {
-    /* border: 2px solid red; */
     box-sizing: border-box;
 }
 
@@ -13,7 +12,4 @@
 .square {
     background-color: white;
     border: black solid;
-    /* min-height: 50px;
-    min-width: 50px; */
-    /* flex: 1; */
 }
